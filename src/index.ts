@@ -39,6 +39,8 @@ app.listen(port, () => {
             restartHotspot()
         }
 
+        console.log("Id:", id)
+
         console.log(`> Ready on http://localhost:${port}`);
     }, 3000)
 })
