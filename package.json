@@ -7,7 +7,7 @@
     "dev": "nodemon",
     "start": "ts-node src/index.ts",
     "build": "npx tsc -w",
-    "serve": "npm run build & pm2 start dist/index/js --watch"
+    "serve": "npm run build & pm2 start dist/index.js --watch"
   },
   "keywords": [],
   "author": "",
