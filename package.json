@@ -20,8 +20,10 @@
     "express": "^4.18.1",
     "mustache": "^4.2.0",
     "nodemon": "^2.0.16",
-    "redis": "^4.1.0",
     "ts-node": "^10.8.0",
     "typescript": "^4.7.2"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4.1.3"
   }
 }

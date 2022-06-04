@@ -2,7 +2,6 @@ import express from "express"
 import cors from "cors"
 
 import { config } from "dotenv"
-import { connectToClient } from "./database/redis"
 
 import network from "./routes/network"
 
@@ -16,6 +15,4 @@ app.use("/network", network)
 
 app.listen(port, () => {
     console.log("App listening at port:", port)
-
-    connectToClient()
 })

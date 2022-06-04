@@ -1,6 +1,6 @@
 import Mustache from "mustache"
 import { restartDHCPCD } from "../dhcpcd"
-import { disableProcess, enableProcess, getDeviceSerialNumber, startProcess, stopProcess } from "../systemctl"
+import { disableProcess, enableProcess, getDeviceSerialNumber, startProcess, stopProcess } from "../../systemctl"
 import { DHCPCDHostapdConfig } from "./types"
 
 export const createDHCPCDConfigForHostapd = (config: DHCPCDHostapdConfig) => {

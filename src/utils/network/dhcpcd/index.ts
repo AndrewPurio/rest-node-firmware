@@ -2,7 +2,7 @@ import { createDHCPCDConfigForHostapd } from "../access_point"
 import { DHCPCDHostapdConfig } from "../access_point/types"
 import { dhcpcdFilePath, NetworkState } from "./types"
 import { writeFileSync } from "fs"
-import { execute } from "../execute"
+import { execute } from "../../execute"
 import { wifiDHCPCDTemplate } from "../wifi"
 
 export const updateDHCPCDConfig = (state: NetworkState, config: DHCPCDHostapdConfig) => {
