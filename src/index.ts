@@ -18,25 +18,27 @@ const app = express()
 app.use(cors())
 app.use("/network", network)
 
-app.listen(port, async () => {
-    const { stdout } = await getDeviceSerialNumber()
-    const serialNumber = stdout.replace(/\s/, "") || []
+app.listen(port, () => {
+    setTimeout(async () => {
+        const { stdout } = await getDeviceSerialNumber()
+        const serialNumber = stdout.replace(/\s/, "") || []
 
-    const last_4_characters = /\w{4}\b/
-    const [id] = last_4_characters.exec(serialNumber) || []
+        const last_4_characters = /\w{4}\b/
+        const [id] = last_4_characters.exec(serialNumber) || []
 
-    const { stdout: hostapdConf } = await execute("cat /etc/hostapd/hostapd.conf")
-    const [ssid] = /(?<=ssid=)\w+/.exec(hostapdConf) || []
-    const [currentId] = last_4_characters.exec(ssid) || []
+        const { stdout: hostapdConf } = await execute("cat /etc/hostapd/hostapd.conf")
+        const [ssid] = /(?<=ssid=)\w+/.exec(hostapdConf) || []
+        const [currentId] = last_4_characters.exec(ssid) || []
 
-    if (id && id !== currentId) {
-        const hostapdConf = createHostapdConf({ ssid: await configureHotspotSSID() })
-        const dnsMasqConf = createDnsMasqConf()
+        if (id && id !== currentId) {
+            const hostapdConf = createHostapdConf({ ssid: await configureHotspotSSID() })
+            const dnsMasqConf = createDnsMasqConf()
 
-        writeFileSync("/etc/dnsmasq.conf", dnsMasqConf)
-        writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
-        restartHotspot()
-    }
+            writeFileSync("/etc/dnsmasq.conf", dnsMasqConf)
+            writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
+            restartHotspot()
+        }
 
-    console.log(`> Ready on http://localhost:${port}`);
+        console.log(`> Ready on http://localhost:${port}`);
+    }, 3000)
 })

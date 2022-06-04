@@ -9,7 +9,7 @@ import { killWpaSupplicant } from "../../../utils/network/wifi";
 
 const router = Router()
 
-router.use("/", async (request, response) => {
+router.get("/", async (request, response) => {
     const dhcpcdConfig = {
         staticIpAddress
     }
@@ -17,17 +17,21 @@ router.use("/", async (request, response) => {
     try {
         await stopWifiHotspot()
         await updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
-
+        response.json({
+            message: "Successfully started wifi hotspot"
+        })
 
         await killWpaSupplicant()
-
     } catch (e) {
-        const error = e as Error
+        const { message } = e as Error
+        response.statusCode = 500
 
-        console.log(error)
+        response.json({
+            message
+        })
+
+        console.log(message)
     } finally {
-        response.json("Success")
-
         await disableFirewall()
         restartHotspot()
     }
