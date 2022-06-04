@@ -8,6 +8,7 @@ import network from "./routes/network"
 import { getDeviceSerialNumber } from "./utils/systemctl"
 import { configureHotspotSSID, createHostapdConf, restartHotspot } from "./utils/network/access_point"
 import { execute } from "./utils/execute"
+import { createDnsMasqConf } from "./utils/network/dnsmasq"
 
 config()
 
@@ -30,7 +31,9 @@ app.listen(port, async () => {
 
     if (id && id !== currentId) {
         const hostapdConf = createHostapdConf({ ssid: await configureHotspotSSID() })
+        const dnsMasqConf = createDnsMasqConf()
 
+        writeFileSync("/etc/dnsmasq.conf", dnsMasqConf)
         writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
         restartHotspot()
     }
