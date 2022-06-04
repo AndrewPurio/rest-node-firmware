@@ -136,7 +136,12 @@ export const resetWpaSupplicant = async () => {
 }
 
 export const loadWpaSupplicantConfig = async () => {
-    const { stdout, stderr } = await execute("sudo wpa_supplicant -B -Dnl80211 -iwlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf")
+    try {
+        const { stdout, stderr } = await execute("sudo wpa_supplicant -B -Dnl80211 -iwlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf")
 
-    return { stdout, stderr }
+        return { stdout, stderr }
+    } catch (error) {
+        throw error
+    }
+
 }

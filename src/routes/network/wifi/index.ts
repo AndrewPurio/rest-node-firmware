@@ -8,7 +8,7 @@ const router = Router()
 
 router.use(json())
 
-router.get("/", async (request, response) => {
+router.post("/", async (request, response) => {
     const { body } = request
     const { ssid, password, country, timezone } = body
 
