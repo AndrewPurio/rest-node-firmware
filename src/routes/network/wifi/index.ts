@@ -1,10 +1,12 @@
-import { Router } from "express";
+import { json, Router } from "express";
 import { enableAvahid, startAvahid } from "../../../utils/network/access_point";
 import { enableFirewall } from "../../../utils/network/firewall";
 import { createWpaSupplicantTemplate, encodeWifiCredentials, extractEncodedPsk, resetWpaSupplicant, scanWifi, setUserTimezone, wifiDHCPCDTemplate } from "../../../utils/network/wifi";
 import { writeFileSync } from "fs"
 
 const router = Router()
+
+router.use(json())
 
 router.get("/", async (request, response) => {
     const { body } = request
