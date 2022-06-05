@@ -2,6 +2,34 @@ import Mustache from "mustache"
 import { restartDHCPCD } from "../dhcpcd"
 import { disableProcess, enableProcess, getDeviceSerialNumber, startProcess, stopProcess } from "../../systemctl"
 import { DHCPCDHostapdConfig } from "./types"
+import { createDnsMasqConf } from "../dnsmasq"
+import { writeFileSync } from "fs"
+import { execute } from "../../execute"
+
+export const initializeHotspot = async () => {
+    try {
+        const { stdout } = await getDeviceSerialNumber()
+        const serialNumber = stdout.replace(/\s/, "") || []
+
+        const last_4_characters = /\w{4}\b/
+        const [id] = last_4_characters.exec(serialNumber) || []
+
+        const { stdout: hostapdConf } = await execute("cat /etc/hostapd/hostapd.conf")
+        const [ssid] = /(?<=ssid=)\w+/.exec(hostapdConf) || []
+        const [currentId] = last_4_characters.exec(ssid) || []
+
+        if (id && id !== currentId) {
+            const hostapdConf = createHostapdConf({ ssid: await configureHotspotSSID() })
+            const dnsMasqConf = createDnsMasqConf()
+
+            writeFileSync("/etc/dnsmasq.conf", dnsMasqConf)
+            writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
+            restartHotspot()
+        }
+    } catch (error) {
+        throw error
+    }
+}
 
 export const createDHCPCDConfigForHostapd = (config: DHCPCDHostapdConfig) => {
     const template = `hostname
@@ -146,8 +174,8 @@ export const restartHotspot = async () => {
         await startDnsMasq()
         await enableHostapd()
         await startHostapd()
-    } catch(error) {
+    } catch (error) {
         console.log("Restart Hotspot Error:", error)
     }
-    
+
 }
