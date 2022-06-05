@@ -4,11 +4,13 @@ import cors from "cors"
 import { config } from "dotenv"
 import { writeFileSync } from "fs"
 
-import network from "./routes/network"
 import { getDeviceSerialNumber } from "./utils/systemctl"
 import { configureHotspotSSID, createHostapdConf, restartHotspot } from "./utils/network/access_point"
 import { execute } from "./utils/execute"
 import { createDnsMasqConf } from "./utils/network/dnsmasq"
+
+import network from "./routes/network"
+import dev from "./routes/dev"
 
 config()
 
@@ -17,6 +19,7 @@ const app = express()
 
 app.use(cors())
 app.use("/network", network)
+app.use("/dev", dev)
 
 app.listen(port, () => {
     setTimeout(async () => {
