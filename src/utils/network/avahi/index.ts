@@ -10,7 +10,7 @@ const createRestNodeService = async (name: string = "Rest_Node", creator: string
         const config = {
             name,
             creator,
-            serial_number
+            serial_number: (serial_number as string).replace(/\W+/g, "")
         }
 
         const template = `<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
