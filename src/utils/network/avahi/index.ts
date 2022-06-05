@@ -5,7 +5,7 @@ import { getDeviceSerialNumber } from "../../systemctl"
 
 const createRestNodeService = async (name: string = "Rest_Node", creator: string = "Exist_Tribe") => {
     try {
-        const serial_number = await getDeviceSerialNumber()
+        const { stdout: serial_number } = await getDeviceSerialNumber()
         const config = {
             name,
             creator,
@@ -20,7 +20,7 @@ const createRestNodeService = async (name: string = "Rest_Node", creator: string
 <type>_http._tcp</type>
 <port>80</port>
 <txt-record>{{name}}</txt-record>
-<txt-record{{creator}}</txt-record>
+<txt-record>{{creator}}</txt-record>
 <txt-record>{{serial_number}}</txt-record>
 </service>
 </service-group>
