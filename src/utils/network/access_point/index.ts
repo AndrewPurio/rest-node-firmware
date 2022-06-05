@@ -1,6 +1,6 @@
 import Mustache from "mustache"
 import { restartDHCPCD } from "../dhcpcd"
-import { disableProcess, enableProcess, getDeviceSerialNumber, startProcess, stopProcess } from "../../systemctl"
+import { disableProcess, enableProcess, getDeviceSerialNumber, restartProcess, startProcess, stopProcess } from "../../systemctl"
 import { DHCPCDHostapdConfig } from "./types"
 import { createDnsMasqConf } from "../dnsmasq"
 import { writeFileSync } from "fs"
@@ -139,6 +139,14 @@ export const enableAvahid = async () => {
 
 export const startAvahid = async () => {
     const { stdout, stderr } = await startProcess("avahi-daemon")
+
+    return {
+        stdout, stderr
+    }
+}
+
+export const restartAvahid = async () => {
+    const { stdout, stderr } = await restartProcess("avahi-daemon")
 
     return {
         stdout, stderr

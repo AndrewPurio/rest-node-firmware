@@ -6,6 +6,7 @@ import { config } from "dotenv"
 import network from "./routes/network"
 import dev from "./routes/dev"
 import { initializeHotspot } from "./utils/network/access_point"
+import { updateAvahiService } from "./utils/network/avahi"
 
 config()
 
@@ -20,6 +21,7 @@ app.listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);
 
     try {
+        await updateAvahiService()
         await initializeHotspot()
     } catch (error) {
         console.log(error)
