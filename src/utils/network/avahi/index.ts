@@ -5,8 +5,7 @@ import { getDeviceSerialNumber } from "../../systemctl"
 
 const createRestNodeService = async (name: string = "Rest_Node", creator: string = "Exist_Tribe") => {
     try {
-        const { stdout } = await getDeviceSerialNumber()
-        const [serial_number] = stdout.replace(/\s/, "") || []
+        const { stdout: serial_number } = await getDeviceSerialNumber()
 
         const config = {
             name,
