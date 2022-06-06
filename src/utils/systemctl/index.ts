@@ -46,10 +46,11 @@ export const restartProcess = async (name: string) => {
 }
 
 export const getDeviceSerialNumber = async () => {
-    const { stdout, stderr } = await execute("cat /sys/firmware/devicetree/base/serial-number")
+    const { stdout: id, stderr } = await execute("cat /sys/firmware/devicetree/base/serial-number")
 
     return {
-        stdout, stderr
+        stdout: (id as string).replace(/\W+/g, ""), 
+        stderr
     }
 }
 

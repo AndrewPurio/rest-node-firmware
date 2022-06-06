@@ -8,8 +8,7 @@ import { execute } from "../../execute"
 
 export const initializeHotspot = async () => {
     try {
-        const { stdout } = await getDeviceSerialNumber()
-        const serialNumber = stdout.replace(/\s/, "") || []
+        const { stdout: serialNumber } = await getDeviceSerialNumber()
 
         const last_4_characters = /\w{4}\b/
         const [id] = last_4_characters.exec(serialNumber) || []
