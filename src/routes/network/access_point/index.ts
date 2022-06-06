@@ -17,10 +17,7 @@ router.get("/", async (request, response) => {
     try {
         await stopWifiHotspot()
         await updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
-        response.json({
-            message: "Successfully started wifi hotspot"
-        })
-
+        
         await killWpaSupplicant()
     } catch (e) {
         const { message } = e as Error
@@ -32,6 +29,10 @@ router.get("/", async (request, response) => {
 
         console.log(message)
     } finally {
+        response.json({
+            message: "Successfully started wifi hotspot"
+        })
+        
         await disableFirewall()
         restartHotspot()
     }
