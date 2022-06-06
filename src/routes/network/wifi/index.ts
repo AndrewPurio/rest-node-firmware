@@ -10,44 +10,20 @@ router.use(json())
 
 router.post("/", async (request, response) => {
     const { body } = request
+
+    for (let key in body) {
+        if (body[key])
+            continue
+
+        response.status(400)
+        response.json({
+            message: `Missing ${key} in json body`
+        })
+
+        return
+    }
+
     const { ssid, password, country, timezone } = body
-
-    if (!ssid) {
-        response.status(400)
-        response.json({
-            message: "Missing ssid in json body"
-        })
-
-        return
-    }
-
-    if (!password) {
-        response.status(400)
-        response.json({
-            message: "Missing password in json body"
-        })
-
-        return
-    }
-
-    if (!country) {
-        response.status(400)
-        response.json({
-            message: "Missing country in json body"
-        })
-
-        return
-    }
-
-    if (!timezone) {
-        response.status(400)
-        response.json({
-            message: "Missing timezone in json body"
-        })
-
-        return
-    }
-
     const encodedCredentials = await encodeWifiCredentials({ ssid, password })
     const encodedPsk = await extractEncodedPsk(encodedCredentials)
     const wpaSupplicantTemplate = createWpaSupplicantTemplate({

@@ -5,6 +5,8 @@ import { config } from "dotenv"
 
 import network from "./routes/network"
 import dev from "./routes/dev"
+import system from "./routes/system"
+
 import { initializeHotspot } from "./utils/network/access_point"
 import { updateAvahiService } from "./utils/network/avahi"
 
@@ -16,6 +18,7 @@ const app = express()
 app.use(cors())
 app.use("/network", network)
 app.use("/dev", dev)
+app.use("/system", system)
 
 app.listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);
