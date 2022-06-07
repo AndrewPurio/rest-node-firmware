@@ -1,5 +1,7 @@
 import { Cron } from "croner"
 
+const events = {}
+
 /**
  * Schedule a handler function to trigger based on the scheduled time
  * 

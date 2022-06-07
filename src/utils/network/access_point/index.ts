@@ -5,6 +5,7 @@ import { DHCPCDHostapdConfig } from "./types"
 import { createDnsMasqConf } from "../dnsmasq"
 import { writeFileSync } from "fs"
 import { execute } from "../../execute"
+import { createHostsFile, updateHostname } from "../avahi"
 
 export const initializeHotspot = async () => {
     try {
@@ -13,18 +14,26 @@ export const initializeHotspot = async () => {
         const last_4_characters = /\w{4}\b/
         const [id] = last_4_characters.exec(serialNumber) || []
 
-        const { stdout: hostapdConf } = await execute("cat /etc/hostapd/hostapd.conf")
-        const [ssid] = /(?<=ssid=)\w+/.exec(hostapdConf) || []
+        const { stdout: hostapd } = await execute("cat /etc/hostapd/hostapd.conf")
+        const [ssid] = /(?<=ssid=)\w+/.exec(hostapd) || []
         const [currentId] = last_4_characters.exec(ssid) || []
 
-        if (id && id !== currentId) {
-            const hostapdConf = createHostapdConf({ ssid: await configureHotspotSSID() })
-            const dnsMasqConf = createDnsMasqConf()
+        if (!id || id === currentId)
+            return
+        
+        const hostapdConf = createHostapdConf({ ssid: await configureHotspotSSID() })
+        const dnsMasqConf = createDnsMasqConf()
+        
+        const hostname = `restnode${id}`
+        const hostsFile = createHostsFile(`restnode${id}`)
 
-            writeFileSync("/etc/dnsmasq.conf", dnsMasqConf)
-            writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
-            restartHotspot()
-        }
+        await updateHostname(hostname)
+
+        writeFileSync("/etc/hosts", hostsFile)
+        writeFileSync("/etc/dnsmasq.conf", dnsMasqConf)
+        writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
+
+        await restartHotspot()
     } catch (error) {
         throw error
     }

@@ -2,6 +2,8 @@ import Mustache from "mustache"
 
 import { writeFileSync } from "fs"
 import { getDeviceSerialNumber } from "../../systemctl"
+import { execute } from "../../execute"
+import { restartAvahid } from "../access_point"
 
 const createRestNodeService = async (name: string = "Rest_Node", creator: string = "Exist_Tribe") => {
     try {
@@ -28,6 +30,31 @@ const createRestNodeService = async (name: string = "Rest_Node", creator: string
 `
 
         return Mustache.render(template, config)
+    } catch (error) {
+        throw error
+    }
+}
+
+export const createHostsFile = (hostname: string) => {
+    const config = {
+        hostname
+    }
+
+    const template = `127.0.0.1       localhost
+::1             localhost ip6-localhost ip6-loopback
+ff02::1         ip6-allnodes
+ff02::2         ip6-allrouters
+
+127.0.1.1       {{hostname}}
+`
+
+    return Mustache.render(template, config)
+}
+
+export const updateHostname = async (hostname: string) => {
+    try {
+        await execute(`sudo set-hostname ${hostname}`)
+        await restartAvahid()
     } catch (error) {
         throw error
     }
