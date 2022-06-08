@@ -1,13 +1,14 @@
 import { Router } from "express";
-import { resetHotspotConfig, restartHotspot, stopWifiHotspot } from "../../../utils/network/access_point";
-
+import { removeEventSchedulerContainer } from "../../../utils/events";
+import { resetHotspotConfig, restartHotspot } from "../../../utils/network/access_point";
 import { disableFirewall } from "../../../utils/network/firewall";
 
 const router = Router()
 
 router.get("/", async (request, response) => {
     try {
-       await resetHotspotConfig()
+        await removeEventSchedulerContainer()
+        await resetHotspotConfig()
     } catch (e) {
         const { message } = e as Error
         response.statusCode = 500
@@ -15,15 +16,13 @@ router.get("/", async (request, response) => {
         response.json({
             message
         })
-
-        console.log(message)
     } finally {
         response.json({
-            message: "Successfully started wifi hotspot"
+            message: "Successfully resetted configurations"
         })
-        
+
         await disableFirewall()
-        restartHotspot()
+        await restartHotspot()
     }
 })
 

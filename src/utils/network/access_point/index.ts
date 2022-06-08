@@ -1,11 +1,14 @@
 import Mustache from "mustache"
-import { restartDHCPCD } from "../dhcpcd"
+import { restartDHCPCD, updateDHCPCDConfig } from "../dhcpcd"
 import { disableProcess, enableProcess, getDeviceSerialNumber, restartProcess, startProcess, stopProcess } from "../../systemctl"
 import { DHCPCDHostapdConfig } from "./types"
 import { createDnsMasqConf } from "../dnsmasq"
 import { writeFileSync } from "fs"
 import { execute } from "../../execute"
 import { createHostsFile, updateHostname } from "../avahi"
+import { NetworkState } from "../dhcpcd/types"
+import { killWpaSupplicant } from "../wifi"
+import { staticIpAddress } from "./config"
 
 export const initializeHotspot = async () => {
     try {
@@ -193,5 +196,19 @@ export const restartHotspot = async () => {
     } catch (error) {
         console.log("Restart Hotspot Error:", error)
     }
+}
 
+export const resetHotspotConfig = async () => {
+    const dhcpcdConfig = {
+        staticIpAddress
+    }
+    
+    try {
+        await stopWifiHotspot()
+        updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
+        
+        await killWpaSupplicant()
+    } catch (error) {
+        throw error
+    }
 }

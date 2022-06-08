@@ -1,26 +1,21 @@
-import { Cron } from "croner"
+import { execute } from "../execute"
 
-const events = {}
+const dockerContainer = "event-scheduler"
+const dockerImage = "restnode/event-scheduler"
 
-/**
- * Schedule a handler function to trigger based on the scheduled time
- * 
- * @param time The particular state of time when the cronJon will trigger. Leave the particular parameter empty if you want to trigger it in that interval (e.g. if week is undefined, the cronJob schedule will trigger weekly)
- * @returns The pointer to the cron job created
- */
-export const cronJob = (time: CronParameters = {}, handler: () => void) => {
-    const seconds = time.seconds !== undefined ? time.seconds: "*"
-    const minutes = time.minutes !== undefined ? time.minutes: "*"
-    const hours = time.hours !== undefined ? time.hours: "*"
-    const days = time.days !== undefined ? time.days: "*"
-    const months = time.months !== undefined ? time.months: "*"
-    const daysOfWeek = time.daysOfWeek !== undefined ? time.daysOfWeek: "*"
+export const startEventSchedulerContainer = async (timezone: string) => {
+    try {
+        await execute(`sudo docker run -p 1880:1880 -v events:/data --name ${dockerContainer} -e TZ=${timezone} ${dockerImage}`)
+    } catch (error) {
+        throw error
+    }
+}
 
-    const pattern = `${seconds} ${minutes} ${hours} ${days} ${months} ${daysOfWeek}`
-
-    const cron = new Cron(pattern, () => {
-        console.log("Event fired:", new Date(), time)
-    })
-
-    return cron
+export const removeEventSchedulerContainer = async () => {
+    try {
+        await execute(`sudo docker stop ${dockerContainer}`)
+        await execute(`sudo docker container rm ${dockerContainer}`)
+    } catch (error) {
+        throw error
+    }
 }
