@@ -2,6 +2,7 @@ import { json, Router } from "express";
 import { enableFirewall } from "../../../utils/network/firewall";
 import { createWpaSupplicantTemplate, encodeWifiCredentials, extractEncodedPsk, resetWpaSupplicant, scanWifi, setUserTimezone, wifiDHCPCDTemplate } from "../../../utils/network/wifi";
 import { writeFileSync } from "fs"
+import { runEventSchedulerContainer } from "../../../utils/events";
 
 const router = Router()
 
@@ -33,6 +34,7 @@ router.post("/", async (request, response) => {
 
     try {
         await setUserTimezone(timezone)
+        await runEventSchedulerContainer(timezone)
 
         writeFileSync("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate)
         writeFileSync("/etc/dhcpcd.conf", wifiDHCPCDTemplate())

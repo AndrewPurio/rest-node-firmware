@@ -3,9 +3,11 @@ import { execute } from "../execute"
 const dockerContainer = "event-scheduler"
 const dockerImage = "restnode/event-scheduler"
 
-export const startEventSchedulerContainer = async (timezone: string) => {
+export const runEventSchedulerContainer = async (timezone: string) => {
+    const env = timezone ? `-e TZ=${timezone} `: ""
+
     try {
-        await execute(`sudo docker run -p 1880:1880 -v events:/data --name ${dockerContainer} -e TZ=${timezone} ${dockerImage}`)
+        await execute(`sudo docker run -p 1880:1880 -v events:/data --restart=unless-stopped --name ${dockerContainer} ${env}${dockerImage}`)
     } catch (error) {
         throw error
     }
