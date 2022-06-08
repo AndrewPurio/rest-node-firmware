@@ -53,7 +53,7 @@ ff02::2         ip6-allrouters
 
 export const updateHostname = async (hostname: string) => {
     try {
-        await execute(`sudo set-hostname ${hostname}`)
+        await execute(`sudo hostnamectl set-hostname ${hostname}`)
         await restartAvahid()
     } catch (error) {
         throw error
