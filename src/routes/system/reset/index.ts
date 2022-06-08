@@ -9,6 +9,10 @@ router.get("/", async (request, response) => {
     try {
         await removeEventSchedulerContainer()
         await resetHotspotConfig()
+
+        response.json({
+            message: "Successfully resetted configurations"
+        })
     } catch (e) {
         const { message } = e as Error
         response.statusCode = 500
@@ -17,10 +21,6 @@ router.get("/", async (request, response) => {
             message
         })
     } finally {
-        response.json({
-            message: "Successfully resetted configurations"
-        })
-
         await disableFirewall()
         await restartHotspot()
     }

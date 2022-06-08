@@ -34,7 +34,6 @@ router.post("/", async (request, response) => {
 
     try {
         await setUserTimezone(timezone)
-        await runEventSchedulerContainer(timezone)
 
         writeFileSync("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate)
         writeFileSync("/etc/dhcpcd.conf", wifiDHCPCDTemplate())
@@ -45,6 +44,7 @@ router.post("/", async (request, response) => {
 
         await enableFirewall()
         await resetWpaSupplicant()
+        await runEventSchedulerContainer(timezone)
     } catch (e) {
         const { message } = e as Error
 
