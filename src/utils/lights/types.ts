@@ -12,3 +12,11 @@ export enum LightsDigitalState {
     ON = 1,
     OFF = 0
 }
+
+export enum I2CBuses {
+    PRIMARY = 1
+}
+
+export enum I2CSlaveAddress {
+    ArduinoUno = 8
+}

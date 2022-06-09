@@ -1,6 +1,8 @@
 import { Router, json } from "express";
 import { toggleGpioOutput } from "../../utils/lights";
+import { setBrightness } from "../../utils/lights/i2c";
 import { LightsDigitalState, LightsGPIOPin } from "../../utils/lights/types";
+import { scaleRange } from "../../utils/math";
 
 const router = Router()
 
@@ -9,7 +11,7 @@ router.use(json())
 router.post("/:light", async (request, response) => {
     const { params, body } = request
     const { light } = params
-    const { state } = body
+    const { state, brightness } = body
     
     const lights = {
         night: LightsGPIOPin.NIGHT_LIGHT,
@@ -45,8 +47,19 @@ router.post("/:light", async (request, response) => {
         return
     }
 
+    if(typeof brightness !== "number" || brightness < 0 || brightness > 100) {
+        response.statusCode = 400
+
+        response.json({
+            message: "Valid brightness values are from 0-100"
+        })
+
+        return
+    }
+
     try {
         toggleGpioOutput(lightGpio, lightState)
+        await setBrightness( scaleRange(brightness, 0, 100, -128, 128) )
 
         response.json({
             message: `Successfully toggled ${lightGpio} to ${lightState}`
