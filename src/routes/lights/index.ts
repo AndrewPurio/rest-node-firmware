@@ -47,6 +47,10 @@ router.post("/:light", async (request, response) => {
 
     try {
         toggleGpioOutput(lightGpio, lightState)
+
+        response.json({
+            message: `Successfully toggled ${lightGpio} to ${lightState}`
+        })
     } catch (e) {
         const { message } = e as Error
         response.statusCode = 500
