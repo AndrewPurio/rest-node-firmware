@@ -1,4 +1,5 @@
 import { Gpio } from "pigpio"
+import { LightsDigitalState, LightsGPIOPin } from "./types"
 
 export const toggleGpioOutput = (gpio: LightsGPIOPin, state: LightsDigitalState) => {
     try {

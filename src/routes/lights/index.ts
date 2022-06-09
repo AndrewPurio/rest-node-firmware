@@ -1,5 +1,6 @@
 import { Router, json } from "express";
 import { toggleGpioOutput } from "../../utils/lights";
+import { LightsDigitalState, LightsGPIOPin } from "../../utils/lights/types";
 
 const router = Router()
 
