@@ -7,7 +7,7 @@ export const runEventSchedulerContainer = async (timezone: string) => {
     const env = timezone ? `-e TZ=${timezone} `: ""
 
     try {
-        await execute(`sudo docker run -p 1880:1880 -v events:/data --restart=unless-stopped --name ${dockerContainer} ${env}${dockerImage}`)
+        await execute(`sudo docker run -p 1880:1880 -v events:/data --restart=always --name ${dockerContainer} ${env}${dockerImage}`)
     } catch (error) {
         throw error
     }
