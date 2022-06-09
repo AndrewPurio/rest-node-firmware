@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 
-import staticFiles from "./static"
+import staticFiles from "./files"
 import folders from "./[folder]"
 
 const router = Router()
