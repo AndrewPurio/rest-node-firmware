@@ -5,7 +5,7 @@ export const setBrightness = async (brightness: number) => {
     try {
         const i2c1 = await openPromisified(I2CBuses.PRIMARY)
 
-        await i2c1.writeByte(I2CSlaveAddress.ArduinoUno, 0, brightness)
+        await i2c1.sendByte(I2CSlaveAddress.ArduinoUno, brightness)
     } catch (error) {
         throw error
     }
