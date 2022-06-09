@@ -1,10 +1,12 @@
 import express from "express"
 import cors from "cors"
+import os from "os"
 
 import { config } from "dotenv"
 
-import network from "./routes/network"
 import dev from "./routes/dev"
+import network from "./routes/network"
+import sound from "./routes/sound"
 import system from "./routes/system"
 
 import { initializeHotspot } from "./utils/network/access_point"
@@ -16,12 +18,17 @@ const port = process.env.port || 5000
 const app = express()
 
 app.use(cors())
-app.use("/network", network)
+
 app.use("/dev", dev)
+app.use("/network", network)
+app.use("/sound", sound)
 app.use("/system", system)
 
 app.listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);
+
+    if(os.platform() === "win32")
+        return
 
     try {
         await updateAvahiService()
