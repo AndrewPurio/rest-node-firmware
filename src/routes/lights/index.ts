@@ -35,7 +35,7 @@ router.post("/:light", async (request, response) => {
 
     const lightState = states[state as keyof typeof states]
 
-    if(!lightState) {
+    if(lightState === undefined) {
         response.statusCode = 400
 
         response.json({
