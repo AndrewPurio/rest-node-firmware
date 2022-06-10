@@ -59,9 +59,7 @@ router.post("/:light", async (request, response) => {
 
     try {
         toggleGpioOutput(lightGpio, lightState)
-        const data = scaleRange(brightness, 0, 100, -128, 127)
-        
-        await setBrightness( data )
+        await setBrightness( brightness )
 
         response.json({
             message: `Successfully toggled ${lightGpio} to ${lightState}`
