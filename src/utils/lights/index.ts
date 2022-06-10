@@ -21,6 +21,8 @@ export const fadeBrightness = async (min: number, max: number, durationInMs: num
     const fadeInterval = setInterval(async () => {
         await setBrightness(currentBrightness)
 
+        console.log("Brightness:", currentBrightness, increment)
+
         currentBrightness += increment
 
         if (currentBrightness >= max)
@@ -30,6 +32,8 @@ export const fadeBrightness = async (min: number, max: number, durationInMs: num
     try {
         // @ts-ignore
         controller.signal.addEventListener("abort", () => {
+            console.log("Fade aborted!!")
+
             clearInterval(fadeInterval)
         }, {
             once: true
