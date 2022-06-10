@@ -4,8 +4,8 @@ export enum Lights {
 }
 
 export enum LightsGPIOPin {
-    NIGHT_LIGHT = 27,
-    WAKE_LIGHT = 22
+    NIGHT_LIGHT = 22,
+    WAKE_LIGHT = 27
 }
 
 export enum LightsDigitalState {

@@ -11,7 +11,7 @@ router.use(json())
 router.post("/:light", async (request, response) => {
     const { params, body } = request
     const { light } = params
-    const { state, brightness } = body
+    const { state, brightness, options } = body
     
     const lights = {
         night: LightsGPIOPin.NIGHT_LIGHT,
@@ -59,7 +59,7 @@ router.post("/:light", async (request, response) => {
 
     try {
         toggleGpioOutput(lightGpio, lightState)
-        const data = Math.round( scaleRange(brightness, 0, 100, -128, 127) )
+        const data = scaleRange(brightness, 0, 100, -128, 127)
         
         await setBrightness( data )
 
