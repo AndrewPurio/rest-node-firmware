@@ -1,21 +1,21 @@
-import express from "express"
 import cors from "cors"
 import os from "os"
 
 import { config } from "dotenv"
 import { initializeHotspot } from "./utils/network/access_point"
 import { updateAvahiService } from "./utils/network/avahi"
+import { app } from "./utils/server"
 
 import dev from "./routes/dev"
 import lights from "./routes/lights"
 import network from "./routes/network"
 import sound from "./routes/sound"
 import system from "./routes/system"
+import { checkConnectedWifiSSID } from "./utils/network/wifi"
 
 config()
 
 const port = process.env.port || 80
-const app = express()
 
 app.use(cors())
 
@@ -32,8 +32,12 @@ app.listen(port, async () => {
         return
 
     try {
+        const { stdout } = await checkConnectedWifiSSID()
+
+        console.log("Wifi SSID:", stdout)
+
         await updateAvahiService()
-        await initializeHotspot()
+        // await initializeHotspot()
     } catch (error) {
         console.log(error)
     }

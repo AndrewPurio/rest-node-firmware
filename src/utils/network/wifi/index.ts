@@ -143,5 +143,16 @@ export const loadWpaSupplicantConfig = async () => {
     } catch (error) {
         throw error
     }
+}
 
+export const checkConnectedWifiSSID = async () => {
+    try {
+        const { stdout, stderr } = await execute("iwgetid")
+
+        return {
+            stdout, stderr
+        }
+    } catch (error) {
+        throw error
+    }
 }
