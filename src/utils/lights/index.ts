@@ -1,8 +1,12 @@
 import { Gpio } from "pigpio"
+import { platform } from "os"
 import { setBrightness } from "./i2c"
 import { LightsDigitalState, LightsGPIOPin } from "./types"
 
 export const toggleGpioOutput = (gpio: LightsGPIOPin, state: LightsDigitalState) => {
+    if (platform() === "win32")
+        return
+
     try {
         const led = new Gpio(gpio, {
             mode: Gpio.OUTPUT
@@ -15,6 +19,9 @@ export const toggleGpioOutput = (gpio: LightsGPIOPin, state: LightsDigitalState)
 }
 
 export const fadeBrightness = async (min: number, max: number, durationInMs: number, tick = 500, controller: AbortController) => {
+    if (platform() === "win32")
+        return
+
     const increment = (max - min) / (durationInMs / tick)
     let currentBrightness = min
 

@@ -1,8 +1,8 @@
 import { Router, json } from "express";
+import { platform } from "os";
 import { toggleGpioOutput } from "../../utils/lights";
 import { setBrightness } from "../../utils/lights/i2c";
 import { LightsDigitalState, LightsGPIOPin } from "../../utils/lights/types";
-import { scaleRange } from "../../utils/math";
 
 const router = Router()
 
@@ -52,6 +52,14 @@ router.post("/:light", async (request, response) => {
 
         response.json({
             message: "Valid brightness values are from 0-100"
+        })
+
+        return
+    }
+
+    if(platform() === "win32") {
+        response.json({
+            message: `Successfully toggled ${lightGpio} to ${lightState}`
         })
 
         return
