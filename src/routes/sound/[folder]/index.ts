@@ -7,6 +7,8 @@ router.get("/:folder", async (request, response) => {
     const { params } = request
     const { folder } = params
 
+    console.log("Folder:", folder)
+
     try {
         const files = await readdir(`static/${folder}`)
 

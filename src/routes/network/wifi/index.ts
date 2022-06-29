@@ -15,7 +15,7 @@ router.post("/", async (request, response) => {
         if (body[key])
             continue
 
-        response.status(400)
+        response.statusCode = 400
         response.json({
             message: `Missing ${key} in json body`
         })
