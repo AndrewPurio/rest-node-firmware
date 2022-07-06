@@ -12,6 +12,7 @@ import network from "./routes/network"
 import sound from "./routes/sound"
 import system from "./routes/system"
 import { checkConnectedWifiSSID } from "./utils/network/wifi"
+import { getDeviceSerialNumber } from "./utils/systemctl"
 
 config()
 
@@ -33,11 +34,17 @@ app.listen(port, async () => {
 
     try {
         const { stdout } = await checkConnectedWifiSSID()
-
+        const { stdout: serialNumber } = await getDeviceSerialNumber()
+        
+        const last_4_characters = /\w{4}\b/
+        const [id] = last_4_characters.exec(serialNumber) || []
+        
+        const hostname = `restnode${id}`
+        
         console.log("Wifi SSID:", stdout)
 
         await updateAvahiService()
-        await updateHostname()
+        await updateHostname(hostname)
         // await initializeHotspot()
     } catch (error) {
         console.log(error)
