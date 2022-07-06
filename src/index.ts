@@ -3,7 +3,7 @@ import os from "os"
 
 import { config } from "dotenv"
 import { initializeHotspot } from "./utils/network/access_point"
-import { updateAvahiService } from "./utils/network/avahi"
+import { updateAvahiService, updateHostname } from "./utils/network/avahi"
 import { app } from "./utils/server"
 
 import dev from "./routes/dev"
@@ -37,6 +37,7 @@ app.listen(port, async () => {
         console.log("Wifi SSID:", stdout)
 
         await updateAvahiService()
+        await updateHostname()
         // await initializeHotspot()
     } catch (error) {
         console.log(error)
