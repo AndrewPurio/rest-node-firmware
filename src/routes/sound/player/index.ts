@@ -42,8 +42,7 @@ router.post("/", async (request, response) => {
 
     const { stdout } = await playerctl("status")
 
-
-    io.sockets.emit("status", {
+    io.sockets.emit("player", {
         "status": stdout
     })
 

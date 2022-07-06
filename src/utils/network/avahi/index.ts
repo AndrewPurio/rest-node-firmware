@@ -65,6 +65,7 @@ export const updateAvahiService = async () => {
         const data = await createRestNodeService()
 
         writeFileSync("/etc/avahi/services/http.service", data)
+        await restartAvahid()
     } catch (error) {
         throw error
     }
