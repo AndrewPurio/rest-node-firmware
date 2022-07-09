@@ -51,4 +51,8 @@ router.post("/", async (request, response) => {
     })
 })
 
+router.get("/stop", (request, response) => {
+    
+})
+
 export default router

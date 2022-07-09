@@ -13,8 +13,10 @@ import sound from "./routes/sound"
 import system from "./routes/system"
 import { checkConnectedWifiSSID } from "./utils/network/wifi"
 import { getDeviceSerialNumber } from "./utils/systemctl"
+import { client, connectToRedis } from "./database/redis"
 
 config()
+connectToRedis(client)
 
 const port = process.env.port || 80
 
