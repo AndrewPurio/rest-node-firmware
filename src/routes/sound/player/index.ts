@@ -2,6 +2,7 @@ import { json, Router } from "express";
 import playerctl from "../../../utils/playerctl";
 import { io } from "../../../utils/socketio";
 import { playMedia } from "../../../utils/vlc";
+import { PlayMedia } from "./types";
 
 const router = Router()
 

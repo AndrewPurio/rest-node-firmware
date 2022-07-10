@@ -1,5 +1,5 @@
 export interface HashFields {
-    [field: string]: string
+    [field: string]: string | number
 }
 
 interface NX {

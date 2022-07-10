@@ -14,6 +14,7 @@ import system from "./routes/system"
 import { checkConnectedWifiSSID } from "./utils/network/wifi"
 import { getDeviceSerialNumber } from "./utils/systemctl"
 import { client, connectToRedis } from "./database/redis"
+import { initializeLightsConfig } from "./database/init"
 
 config()
 connectToRedis(client)
@@ -31,18 +32,20 @@ app.use("/system", system)
 app.listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);
 
-    if(os.platform() === "win32")
+    await initializeLightsConfig()
+
+    if (os.platform() === "win32")
         return
 
     try {
         const { stdout } = await checkConnectedWifiSSID()
         const { stdout: serialNumber } = await getDeviceSerialNumber()
-        
+
         const last_4_characters = /\w{4}\b/
         const [id] = last_4_characters.exec(serialNumber) || []
-        
+
         const hostname = `restnode${id}`
-        
+
         console.log("Wifi SSID:", stdout)
 
         await updateAvahiService()

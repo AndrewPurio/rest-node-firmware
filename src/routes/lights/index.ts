@@ -1,18 +1,62 @@
 import { Router, json } from "express";
 import { platform } from "os";
+import { getHashFieldValues, storeHashValues } from "../../database/redis";
 import { toggleGpioOutput } from "../../utils/lights";
 import { setBrightness } from "../../utils/lights/i2c";
-import { LightsDigitalState, LightsGPIOPin } from "../../utils/lights/types";
+import { Lights, LightsDigitalState, LightsGPIOPin } from "../../utils/lights/types";
 
 const router = Router()
 
 router.use(json())
 
+router.get("/:light", async (request, response) => {
+    const { params, query } = request
+    const { light } = params
+    const { fields } = query
+
+    const currentLight = Lights[light as keyof typeof Lights]
+
+    console.log("Fields:", fields)
+
+    if(!currentLight) {
+        response.statusCode = 400
+
+        response.json({
+            message: "Light param must be one of the following: night, wake"
+        })
+
+        return
+    }
+
+    if(!fields) {
+        response.statusCode = 400
+
+        response.json({
+            message: "Missing 'fields' query"
+        })
+
+        return
+    }
+
+    try {
+        const values = await getHashFieldValues(currentLight, fields as string | string[])
+
+        response.json(values)
+    } catch (e) {
+        const { message } = e as Error
+        response.statusCode = 500
+
+        response.json({
+            message
+        })
+    }
+})
+
 router.post("/:light", async (request, response) => {
     const { params, body } = request
     const { light } = params
     const { state, brightness, options } = body
-    
+
     const lights = {
         night: LightsGPIOPin.NIGHT_LIGHT,
         wake: LightsGPIOPin.WAKE_LIGHT
@@ -20,7 +64,7 @@ router.post("/:light", async (request, response) => {
 
     const lightGpio = lights[light as keyof typeof lights]
 
-    if(!lightGpio) {
+    if (!lightGpio) {
         response.statusCode = 400
 
         response.json({
@@ -37,7 +81,7 @@ router.post("/:light", async (request, response) => {
 
     const lightState = states[state as keyof typeof states]
 
-    if(lightState === undefined) {
+    if (lightState === undefined) {
         response.statusCode = 400
 
         response.json({
@@ -47,7 +91,7 @@ router.post("/:light", async (request, response) => {
         return
     }
 
-    if(typeof brightness !== "number" || brightness < 0 || brightness > 100) {
+    if (typeof brightness !== "number" || brightness < 0 || brightness > 100) {
         response.statusCode = 400
 
         response.json({
@@ -56,18 +100,23 @@ router.post("/:light", async (request, response) => {
 
         return
     }
-
-    if(platform() === "win32") {
-        response.json({
-            message: `Successfully toggled ${lightGpio} to ${lightState}`
+   
+    try {
+        await storeHashValues(Lights[light as keyof typeof Lights], {
+            lightState,
+            brightness
         })
 
-        return
-    }
+        if (platform() === "win32") {
+            response.json({
+                message: `Successfully toggled ${lightGpio} to ${lightState}`
+            })
+    
+            return
+        }
 
-    try {
         toggleGpioOutput(lightGpio, lightState)
-        await setBrightness( brightness )
+        await setBrightness(brightness)
 
         response.json({
             message: `Successfully toggled ${lightGpio} to ${lightState}`
@@ -81,5 +130,6 @@ router.post("/:light", async (request, response) => {
         })
     }
 })
+
 
 export default router
