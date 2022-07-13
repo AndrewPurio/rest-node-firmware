@@ -47,7 +47,6 @@ app.listen(port, async () => {
     try {
         await updateAvahiService()
         await initializeHotspot()
-        await restartHotspot()
     } catch (error) {
         console.log(error)
     }
