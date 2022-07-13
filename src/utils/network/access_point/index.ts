@@ -35,8 +35,6 @@ export const initializeHotspot = async () => {
         writeFileSync("/etc/hosts", hostsFile)
         writeFileSync("/etc/dnsmasq.conf", dnsMasqConf)
         writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
-
-        await restartHotspot()
     } catch (error) {
         throw error
     }

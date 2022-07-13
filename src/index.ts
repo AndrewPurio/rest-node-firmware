@@ -2,7 +2,6 @@ import cors from "cors"
 import os from "os"
 
 import { config } from "dotenv"
-import { initializeHotspot } from "./utils/network/access_point"
 import { updateAvahiService, updateHostname } from "./utils/network/avahi"
 import { app } from "./utils/server"
 
@@ -11,15 +10,23 @@ import lights from "./routes/lights"
 import network from "./routes/network"
 import sound from "./routes/sound"
 import system from "./routes/system"
+
 import { checkConnectedWifiSSID } from "./utils/network/wifi"
 import { getDeviceSerialNumber } from "./utils/systemctl"
 import { client, connectToRedis } from "./database/redis"
 import { initializeLightsConfig } from "./database/init"
+import { io } from "./utils/socketio"
+import { createServer } from "http"
+import { initializeHotspot, restartHotspot } from "./utils/network/access_point"
 
 config()
 connectToRedis(client)
 
 const port = process.env.port || 80
+const server = createServer(app)
+
+io.attach(server)
+io.listen(5001)
 
 app.use(cors())
 
@@ -38,19 +45,9 @@ app.listen(port, async () => {
         return
 
     try {
-        const { stdout } = await checkConnectedWifiSSID()
-        const { stdout: serialNumber } = await getDeviceSerialNumber()
-
-        const last_4_characters = /\w{4}\b/
-        const [id] = last_4_characters.exec(serialNumber) || []
-
-        const hostname = `restnode${id}`
-
-        console.log("Wifi SSID:", stdout)
-
         await updateAvahiService()
-        await updateHostname(hostname)
-        // await initializeHotspot()
+        await initializeHotspot()
+        await restartHotspot()
     } catch (error) {
         console.log(error)
     }

@@ -4,6 +4,7 @@ import { getHashFieldValues, storeHashValues } from "../../database/redis";
 import { toggleGpioOutput } from "../../utils/lights";
 import { setBrightness } from "../../utils/lights/i2c";
 import { Lights, LightsDigitalState, LightsGPIOPin } from "../../utils/lights/types";
+import { io } from "../../utils/socketio";
 
 const router = Router()
 
@@ -15,8 +16,6 @@ router.get("/:light", async (request, response) => {
     const { fields } = query
 
     const currentLight = Lights[light as keyof typeof Lights]
-
-    console.log("Fields:", fields)
 
     if(!currentLight) {
         response.statusCode = 400
@@ -102,9 +101,15 @@ router.post("/:light", async (request, response) => {
     }
    
     try {
-        await storeHashValues(Lights[light as keyof typeof Lights], {
+        const currentLight = Lights[light as keyof typeof Lights]
+
+        await storeHashValues(currentLight, {
             lightState,
             brightness
+        })
+
+        io.sockets.emit(currentLight, {
+            lightState, brightness
         })
 
         if (platform() === "win32") {
