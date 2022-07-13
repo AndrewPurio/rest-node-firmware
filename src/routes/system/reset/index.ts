@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { WIFI_CONNECTED } from "../../../database/keys";
+import { storeHashValues, storeValue } from "../../../database/redis";
 import { removeEventSchedulerContainer } from "../../../utils/events";
 import { resetHotspotConfig, restartHotspot } from "../../../utils/network/access_point";
 import { disableFirewall } from "../../../utils/network/firewall";
@@ -20,6 +22,8 @@ router.get("/", async (request, response) => {
         response.json({
             message
         })
+
+        await storeValue(WIFI_CONNECTED, 0)
     } finally {
         await disableFirewall()
         await restartHotspot()

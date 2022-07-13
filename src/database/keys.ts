@@ -1,0 +1,1 @@
+export const WIFI_CONNECTED = "WIFI_CONNECTED"

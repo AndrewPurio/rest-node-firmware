@@ -13,11 +13,12 @@ import system from "./routes/system"
 
 import { checkConnectedWifiSSID } from "./utils/network/wifi"
 import { getDeviceSerialNumber } from "./utils/systemctl"
-import { client, connectToRedis } from "./database/redis"
+import { client, connectToRedis, getValue } from "./database/redis"
 import { initializeLightsConfig } from "./database/init"
 import { io } from "./utils/socketio"
 import { createServer } from "http"
 import { initializeHotspot, restartHotspot } from "./utils/network/access_point"
+import { WIFI_CONNECTED } from "./database/keys"
 
 config()
 connectToRedis(client)
@@ -44,9 +45,17 @@ app.listen(port, async () => {
     if (os.platform() === "win32")
         return
 
+    const isConnectedToWifi = await getValue(WIFI_CONNECTED)
+
+    console.log("Is Connected to Wifi:", isConnectedToWifi)
+
+    if(isConnectedToWifi)
+        return
+
     try {
         await updateAvahiService()
         await initializeHotspot()
+        await restartHotspot()
     } catch (error) {
         console.log(error)
     }
