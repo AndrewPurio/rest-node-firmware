@@ -47,12 +47,14 @@ app.listen(port, async () => {
 
     const isConnectedToWifi = await getValue(WIFI_CONNECTED)
 
-    console.log("Is Connected to Wifi:", isConnectedToWifi)
+    console.log("Is Connected to Wifi:", !!isConnectedToWifi)
 
     if(isConnectedToWifi)
         return
 
     try {
+        console.log("Initializing hotspot...")
+
         await updateAvahiService()
         await initializeHotspot()
         await restartHotspot()
