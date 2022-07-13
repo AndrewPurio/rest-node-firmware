@@ -19,6 +19,7 @@ import { io } from "./utils/socketio"
 import { createServer } from "http"
 import { initializeHotspot, restartHotspot } from "./utils/network/access_point"
 import { WIFI_CONNECTED } from "./database/keys"
+import { resetDevice } from "./utils/system"
 
 config()
 connectToRedis(client)
@@ -56,8 +57,7 @@ app.listen(port, async () => {
         console.log("Initializing hotspot...")
 
         await updateAvahiService()
-        await initializeHotspot()
-        await restartHotspot()
+        await resetDevice()
     } catch (error) {
         console.log(error)
     }
