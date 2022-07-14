@@ -3,6 +3,10 @@ export enum Lights {
     wake = "WAKE_LIGHT"
 }
 
+export enum InputsGPIOPin {
+    RESET = 10
+}
+
 export enum LightsGPIOPin {
     NIGHT_LIGHT = 22,
     WAKE_LIGHT = 27

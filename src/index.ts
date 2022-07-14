@@ -2,7 +2,7 @@ import cors from "cors"
 import os from "os"
 
 import { config } from "dotenv"
-import { updateAvahiService, updateHostname } from "./utils/network/avahi"
+import { updateAvahiService } from "./utils/network/avahi"
 import { app } from "./utils/server"
 
 import dev from "./routes/dev"
@@ -11,13 +11,10 @@ import network from "./routes/network"
 import sound from "./routes/sound"
 import system from "./routes/system"
 
-import { checkConnectedWifiSSID } from "./utils/network/wifi"
-import { getDeviceSerialNumber } from "./utils/systemctl"
 import { client, connectToRedis, getValue } from "./database/redis"
 import { initializeLightsConfig } from "./database/init"
 import { io } from "./utils/socketio"
 import { createServer } from "http"
-import { initializeHotspot, restartHotspot } from "./utils/network/access_point"
 import { WIFI_CONNECTED } from "./database/keys"
 import { resetDevice } from "./utils/system"
 
