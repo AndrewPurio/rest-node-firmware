@@ -6,14 +6,13 @@ import { disableFirewall } from "../network/firewall"
 
 export const resetDevice = async () => {
     try {
+        removeEventSchedulerContainer()
         await resetHotspotConfig()
-        await removeEventSchedulerContainer()
-    } catch (error) {
-        throw error
-    } finally {
         await initializeHotspot()
         await disableFirewall()
         await restartHotspot()
         await storeValue(WIFI_CONNECTED, 0)
+    } catch (error) {
+        throw error
     }
 }
