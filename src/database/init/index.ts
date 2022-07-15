@@ -27,9 +27,8 @@ export const initializeLightsConfig = async () => {
     }
 }
 
-export const isVerifiedSerialNumber = async () => {
+export const isVerifiedSerialNumber = async (currentSerialNumber: string) => {
     try {
-        const { stdout: currentSerialNumber } = await getDeviceSerialNumber()
         const storedSerialNumber = await getValue(DEVICE_CONFIG)
 
         return currentSerialNumber === storedSerialNumber

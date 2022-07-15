@@ -11,12 +11,13 @@ import network from "./routes/network"
 import sound from "./routes/sound"
 import system from "./routes/system"
 
-import { client, connectToRedis, getValue } from "./database/redis"
+import { client, connectToRedis, getValue, storeValue } from "./database/redis"
 import { initializeLightsConfig, isVerifiedSerialNumber } from "./database/init"
 import { io } from "./utils/socketio"
 import { createServer } from "http"
-import { WIFI_CONNECTED } from "./database/keys"
+import { DEVICE_CONFIG, WIFI_CONNECTED } from "./database/keys"
 import { resetDevice } from "./utils/system"
+import { getDeviceSerialNumber } from "./utils/systemctl"
 
 config()
 connectToRedis(client)
@@ -44,17 +45,29 @@ app.listen(port, async () => {
         return
 
     const isConnectedToWifi = await getValue(WIFI_CONNECTED)
-    const verifiedSerial = await isVerifiedSerialNumber()
+    const { stdout: currentSerialNumber } = await getDeviceSerialNumber()
+    
+    const verifiedSerial = await isVerifiedSerialNumber(currentSerialNumber)
 
     console.log("Is Connected to Wifi:", !!isConnectedToWifi)
     console.log("Verified Serial:", verifiedSerial)
 
-    if(isConnectedToWifi || verifiedSerial)
+    if(verifiedSerial)
+        return
+
+    try {
+        await updateAvahiService()
+        await storeValue(DEVICE_CONFIG, currentSerialNumber)
+    } catch (error) {
+        console.log(error)
+    }
+
+    if(isConnectedToWifi)
         return
 
     try {
         console.log("Resetting the Device...")
-        await updateAvahiService()
+        
         await resetDevice()
     } catch (error) {
         console.log(error)
