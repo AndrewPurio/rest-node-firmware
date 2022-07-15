@@ -5,6 +5,7 @@ import { writeFileSync } from "fs"
 import { runEventSchedulerContainer } from "../../../utils/events";
 import { storeHashValues, storeValue } from "../../../database/redis";
 import { WIFI_CONNECTED } from "../../../database/keys";
+import { DHCPCD_CONF, WPA_SUPPLICANT_CONF } from "../../../config/files";
 
 const router = Router()
 
@@ -34,30 +35,44 @@ router.post("/", async (request, response) => {
         country
     })
 
-    try {
-        await setUserTimezone(timezone)
+    const handleWifiConnection = async (retry = false) => {
+        console.log("Retrying Wifi Connection...")
 
-        writeFileSync("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate)
-        writeFileSync("/etc/dhcpcd.conf", wifiDHCPCDTemplate())
+        try {
+            await setUserTimezone(timezone)
 
-        response.json({
-            message: "Successfully updated wifi credentials"
-        })
+            writeFileSync(WPA_SUPPLICANT_CONF, wpaSupplicantTemplate)
+            writeFileSync(DHCPCD_CONF, wifiDHCPCDTemplate())
 
-        await enableFirewall()
-        await resetWpaSupplicant()
-        await runEventSchedulerContainer(timezone)
-        await storeValue(WIFI_CONNECTED, 1)
-    } catch (e) {
-        const { message } = e as Error
+            response.json({
+                message: "Successfully updated wifi credentials"
+            })
 
-        console.log("Wifi Error:", message)
-        response.statusCode = 500
+            await enableFirewall()
+            await resetWpaSupplicant()
+            await runEventSchedulerContainer(timezone)
+            await storeValue(WIFI_CONNECTED, 1)
+        } catch (e) {
+            if(!retry) {
+                setTimeout(() => {
+                    handleWifiConnection(true)
+                }, 500)
 
-        response.json({
-            message
-        })
+                return
+            }
+
+            const { message } = e as Error
+
+            console.log("Wifi Error:", message)
+            response.statusCode = 500
+
+            response.json({
+                message
+            })
+        }
     }
+
+    handleWifiConnection()
 })
 
 router.get("/scan", async (request, response) => {
