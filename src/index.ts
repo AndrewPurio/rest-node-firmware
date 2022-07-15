@@ -46,28 +46,20 @@ app.listen(port, async () => {
 
     const isConnectedToWifi = await getValue(WIFI_CONNECTED)
     const { stdout: currentSerialNumber } = await getDeviceSerialNumber()
-    
+
     const verifiedSerial = await isVerifiedSerialNumber(currentSerialNumber)
 
     console.log("Is Connected to Wifi:", !!isConnectedToWifi)
     console.log("Verified Serial:", verifiedSerial)
 
-    if(verifiedSerial)
-        return
-
-    try {
-        await updateAvahiService()
-        await storeValue(DEVICE_CONFIG, currentSerialNumber)
-    } catch (error) {
-        console.log(error)
-    }
-
-    if(isConnectedToWifi)
+    if (verifiedSerial && isConnectedToWifi)
         return
 
     try {
         console.log("Resetting the Device...")
         
+        await updateAvahiService()
+        await storeValue(DEVICE_CONFIG, currentSerialNumber)
         await resetDevice()
     } catch (error) {
         console.log(error)
