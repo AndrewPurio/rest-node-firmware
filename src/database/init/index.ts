@@ -1,5 +1,7 @@
 import { Lights } from "../../utils/lights/types"
-import { getHashFieldValues, storeHashValues } from "../redis"
+import { getDeviceSerialNumber } from "../../utils/systemctl"
+import { DEVICE_CONFIG } from "../keys"
+import { getHashFieldValues, getValue, storeHashValues, storeValue } from "../redis"
 
 export const initializeLightsConfig = async () => {
     try {
@@ -22,5 +24,16 @@ export const initializeLightsConfig = async () => {
         }
     } catch (error) {
         console.log(error)
+    }
+}
+
+export const isVerifiedSerialNumber = async () => {
+    try {
+        const { stdout: currentSerialNumber } = await getDeviceSerialNumber()
+        const storedSerialNumber = await getValue(DEVICE_CONFIG)
+
+        return currentSerialNumber === storedSerialNumber
+    } catch (error) {
+        throw error
     }
 }

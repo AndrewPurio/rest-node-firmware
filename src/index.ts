@@ -12,7 +12,7 @@ import sound from "./routes/sound"
 import system from "./routes/system"
 
 import { client, connectToRedis, getValue } from "./database/redis"
-import { initializeLightsConfig } from "./database/init"
+import { initializeLightsConfig, isVerifiedSerialNumber } from "./database/init"
 import { io } from "./utils/socketio"
 import { createServer } from "http"
 import { WIFI_CONNECTED } from "./database/keys"
@@ -44,15 +44,16 @@ app.listen(port, async () => {
         return
 
     const isConnectedToWifi = await getValue(WIFI_CONNECTED)
+    const verifiedSerial = await isVerifiedSerialNumber()
 
     console.log("Is Connected to Wifi:", !!isConnectedToWifi)
+    console.log("Verified Serial:", verifiedSerial)
 
-    if(isConnectedToWifi)
+    if(isConnectedToWifi || verifiedSerial)
         return
 
     try {
-        console.log("Initializing hotspot...")
-
+        console.log("Resetting the Device...")
         await updateAvahiService()
         await resetDevice()
     } catch (error) {
