@@ -206,9 +206,10 @@ export const resetHotspotConfig = async () => {
     try {
         await stopWifiHotspot()
         updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
-        
-        await killWpaSupplicant()
     } catch (error) {
         throw error
+    } finally {
+        await killWpaSupplicant()
+        await disableProcess("wpa_supplicant")
     }
 }

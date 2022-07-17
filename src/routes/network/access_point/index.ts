@@ -7,7 +7,11 @@ const router = Router()
 
 router.get("/", async (request, response) => {
     try {
-       await resetHotspotConfig()
+        await resetHotspotConfig()
+
+        response.json({
+            message: "Successfully started wifi hotspot"
+        })
     } catch (e) {
         const { message } = e as Error
         response.statusCode = 500
@@ -18,12 +22,8 @@ router.get("/", async (request, response) => {
 
         console.log(message)
     } finally {
-        response.json({
-            message: "Successfully started wifi hotspot"
-        })
-        
         await disableFirewall()
-        restartHotspot()
+        await restartHotspot()
     }
 })
 

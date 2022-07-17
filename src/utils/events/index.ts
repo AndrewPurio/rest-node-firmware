@@ -21,3 +21,13 @@ export const removeEventSchedulerContainer = async () => {
         throw error
     }
 }
+
+export const checkIfEventSchedulerExists = async () => {
+    try {
+        const { stdout, stderr } = await execute(`sudo docker ps -q -f ${dockerContainer}`)
+
+        return { stdout, stderr }
+    } catch (error) {
+        throw error
+    }
+}

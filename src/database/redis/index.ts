@@ -175,3 +175,7 @@ export const getSortedSetRangeMembers = async (
         throw error
     }
 }
+
+export const shutdownRedis = async () => {
+    await client.shutdown("SAVE")
+}

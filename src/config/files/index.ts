@@ -1,2 +1,5 @@
 export const WPA_SUPPLICANT_CONF = "/etc/wpa_supplicant/wpa_supplicant.conf"
 export const DHCPCD_CONF = "/etc/dhcpcd.conf"
+export const HOSTS = "/etc/hosts"
+export const DNSMASQ_CONF = "/etc/dnsmasq.conf"
+export const HOSTAPD_CONF = "/etc/hostapd/hostapd.conf"
