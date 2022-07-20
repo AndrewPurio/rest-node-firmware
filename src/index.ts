@@ -16,7 +16,7 @@ import { initializeLightsConfig, isVerifiedSerialNumber } from "./database/init"
 import { io } from "./utils/socketio"
 import { createServer } from "http"
 import { DEVICE_CONFIG, WIFI_CONNECTED } from "./database/keys"
-import { resetDevice } from "./utils/system"
+import { resetDevice, systemSwitch } from "./utils/system"
 import { getDeviceSerialNumber } from "./utils/systemctl"
 
 config()
@@ -40,6 +40,7 @@ app.listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);
 
     await initializeLightsConfig()
+    await systemSwitch()
 
     if (os.platform() === "win32")
         return
