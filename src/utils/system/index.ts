@@ -26,7 +26,7 @@ export const systemSwitch = async () => {
     try {
         const resetButton = new Gpio(7, {
             mode: Gpio.INPUT,
-            pullUpDown: Gpio.PUD_UP,
+            pullUpDown: Gpio.PUD_DOWN,
             alert: true
         })
 
