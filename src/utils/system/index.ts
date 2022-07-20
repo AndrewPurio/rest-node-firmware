@@ -26,15 +26,16 @@ export const systemSwitch = async () => {
     try {
         const resetButton = new Gpio(7, {
             mode: Gpio.INPUT,
-            pullUpDown: Gpio.PUD_DOWN,
-            edge: Gpio.EITHER_EDGE
+            pullUpDown: Gpio.PUD_UP,
+            alert: true
         })
 
         console.log("Reset button initialized...")
 
-        resetButton.on("interrupt", (level) => {
-            console.log("Reset Button State:", level)
-            // resetDevice()
+        resetButton.glitchFilter(10000)
+
+        resetButton.on("alert", (level, tick) => {
+            console.log("Debounced Reset Button State:", level, tick)
         })
     } catch (error) {
         throw error
