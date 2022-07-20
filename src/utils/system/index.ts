@@ -25,6 +25,7 @@ export const systemSwitch = async () => {
         const resetButton = new Gpio(4, {
             mode: Gpio.INPUT,
             pullUpDown: Gpio.PUD_DOWN,
+            edge: Gpio.EITHER_EDGE
         })
 
         console.log("Reset button initialized...")
