@@ -10,6 +10,8 @@ export const resetDevice = async () => {
         await initializeHotspot()
         await restartHotspot()
         await storeValue(WIFI_CONNECTED, 0)
+
+        return 
     } catch (error) {
         throw error
     } finally {
@@ -22,7 +24,7 @@ export const systemSwitch = async () => {
         return
 
     try {
-        const resetButton = new Gpio(4, {
+        const resetButton = new Gpio(7, {
             mode: Gpio.INPUT,
             pullUpDown: Gpio.PUD_DOWN,
             edge: Gpio.EITHER_EDGE
