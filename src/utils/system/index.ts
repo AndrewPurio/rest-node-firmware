@@ -1,3 +1,5 @@
+import { platform } from "os"
+import { Gpio } from "pigpio"
 import { WIFI_CONNECTED } from "../../database/keys"
 import { storeValue } from "../../database/redis"
 import { removeEventSchedulerContainer } from "../events"
@@ -12,5 +14,24 @@ export const resetDevice = async () => {
         throw error
     } finally {
         removeEventSchedulerContainer()
+    }
+}
+
+export const systemSwitch = async () => {
+    if (platform() === "win32")
+        return
+
+    try {
+        const resetButton = new Gpio(4, {
+            mode: Gpio.INPUT,
+            pullUpDown: Gpio.PUD_DOWN,
+        })
+
+        resetButton.on("interrupt", (level) => {
+            console.log("Reset Button State:", level)
+            // resetDevice()
+        })
+    } catch (error) {
+        throw error
     }
 }
