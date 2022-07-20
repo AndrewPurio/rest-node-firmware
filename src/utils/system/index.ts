@@ -11,7 +11,7 @@ export const resetDevice = async () => {
         await restartHotspot()
         await storeValue(WIFI_CONNECTED, 0)
 
-        return 
+        return
     } catch (error) {
         throw error
     } finally {
@@ -19,25 +19,20 @@ export const resetDevice = async () => {
     }
 }
 
-export const systemSwitch = async () => {
+export const systemSwitch = () => {
     if (platform() === "win32")
         return
 
-    try {
-        const resetButton = new Gpio(7, {
-            mode: Gpio.INPUT,
-            pullUpDown: Gpio.PUD_DOWN,
-            edge: Gpio.EITHER_EDGE
-        })
+    const resetButton = new Gpio(7, {
+        mode: Gpio.INPUT,
+        pullUpDown: Gpio.PUD_DOWN,
+        edge: Gpio.FALLING_EDGE
+    })
 
-        console.log("Reset button initialized...")
+    console.log("Reset button initialized...")
 
-        resetButton.glitchFilter(10000)
+    resetButton.on("interrupt", (level) => {
+        console.log("Button State:", level)
+    })
 
-        resetButton.on("interrupt", (level) => {
-            console.log("Button State:", level)
-        })
-    } catch (error) {
-        throw error
-    }
 }
