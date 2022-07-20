@@ -32,8 +32,6 @@ export const initializeHotspot = async () => {
 
         await updateHostname(hostname)
 
-        console.log("Hostapd Conf:", hostapdConf)
-
         writeFileSync("/etc/hosts", hostsFile)
         writeFileSync("/etc/dnsmasq.conf", dnsMasqConf)
         writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
