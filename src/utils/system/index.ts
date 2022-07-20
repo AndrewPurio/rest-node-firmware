@@ -27,6 +27,8 @@ export const systemSwitch = async () => {
             pullUpDown: Gpio.PUD_DOWN,
         })
 
+        console.log("Reset button initialized...")
+
         resetButton.on("interrupt", (level) => {
             console.log("Reset Button State:", level)
             // resetDevice()
