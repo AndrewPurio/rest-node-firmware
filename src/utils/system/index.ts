@@ -23,16 +23,15 @@ export const systemSwitch = () => {
     if (platform() === "win32")
         return
 
+    console.log("Reset Button Initialized...")
+
     const resetButton = new Gpio(7, {
         mode: Gpio.INPUT,
         pullUpDown: Gpio.PUD_DOWN,
-        edge: Gpio.RISING_EDGE
+        edge: Gpio.EITHER_EDGE
     })
-
-    console.log("Reset button initialized...")
 
     resetButton.on("interrupt", (level) => {
         console.log("Button State:", level)
     })
-
 }

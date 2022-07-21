@@ -38,9 +38,9 @@ app.use("/system", system)
 
 app.listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);
+    systemSwitch()
 
     await initializeLightsConfig()
-    await systemSwitch()
 
     if (os.platform() === "win32")
         return
