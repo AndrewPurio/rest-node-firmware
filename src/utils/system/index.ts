@@ -48,7 +48,5 @@ export const systemSwitch = () => {
         fiveSecondPressTimer = setTimeout(() => {
             console.log("Resetting the device...")
         }, 5000)
-
-        console.log("Button State:", level, new Date())
     })
 }

@@ -37,19 +37,20 @@ app.use("/sound", sound)
 app.use("/system", system)
 
 app.listen(port, async () => {
-    console.log(`> Ready on http://localhost:${port}`);
-    gpioInit()
-    systemSwitch()
-
-    await initializeLightsConfig()
+    console.log(`> Ready on http://localhost:${port}`)
 
     if (os.platform() === "win32")
         return
 
-    const isConnectedToWifi = await getValue(WIFI_CONNECTED)
+    const isConnectedToWifi = Number(await getValue(WIFI_CONNECTED))
     const { stdout: currentSerialNumber } = await getDeviceSerialNumber()
 
     const verifiedSerial = await isVerifiedSerialNumber(currentSerialNumber)
+
+    gpioInit()
+    systemSwitch()
+
+    await initializeLightsConfig()
 
     console.log("Is Connected to Wifi:", !!isConnectedToWifi)
     console.log("Verified Serial:", verifiedSerial)

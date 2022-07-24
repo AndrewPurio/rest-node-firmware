@@ -1,7 +1,7 @@
 import { execute } from "../execute"
 import { MediaPlayerConfig, MediaPlayerEvent } from "../types"
 
-export default async function playerctl(command: keyof typeof MediaPlayerEvent, config?: MediaPlayerConfig) {
+export default async function playerctl(command: MediaPlayerEvent, config?: MediaPlayerConfig) {
     const playerCommand = ["playerctl", command]
 
     if (config) {

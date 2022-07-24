@@ -1,6 +1,7 @@
 import { json, Router } from "express";
 import playerctl from "../../../utils/playerctl";
 import { io } from "../../../utils/socketio";
+import { MediaPlayerEvent } from "../../../utils/types";
 import { playMedia } from "../../../utils/vlc";
 import { PlayMedia } from "./types";
 
@@ -33,27 +34,49 @@ router.post("/", async (request, response) => {
     const { path, loop, volume } = data
     const value = volume / 100
 
-    playMedia(path, {
-        loop: !!loop
-    })
+    try {
+        playMedia(path, {
+            loop: !!loop
+        })
 
-    playerctl("volume", {
-        value
-    })
+        await playerctl(MediaPlayerEvent.volume, {
+            value
+        })
 
-    const { stdout } = await playerctl("status")
+        const { stdout: message } = await playerctl(MediaPlayerEvent.status)
 
-    io.sockets.emit("player", {
-        "status": stdout
-    })
+        io.sockets.emit("player", {
+            "status": message
+        })
 
-    response.json({
-        message: "Successfully playing media"
-    })
+        response.json({
+            message
+        })
+    } catch (e) {
+        const { message } = e as Error
+        response.statusCode = 500
+
+        response.json({
+            message
+        })
+    }
 })
 
-router.get("/stop", (request, response) => {
-    
+router.get("/stop", async (request, response) => {
+    try {
+        const { stdout: message } = await playerctl(MediaPlayerEvent.stop)
+
+        response.json({
+            message
+        })
+    } catch (e) {
+        const { message } = e as Error
+        response.statusCode = 500
+
+        response.json({
+            message
+        })
+    }
 })
 
 export default router
