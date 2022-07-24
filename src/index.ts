@@ -16,7 +16,7 @@ import { initializeLightsConfig, isVerifiedSerialNumber } from "./database/init"
 import { io } from "./utils/socketio"
 import { createServer } from "http"
 import { DEVICE_CONFIG, WIFI_CONNECTED } from "./database/keys"
-import { resetDevice, systemSwitch } from "./utils/system"
+import { gpioInit, resetDevice, systemSwitch } from "./utils/system"
 import { getDeviceSerialNumber } from "./utils/systemctl"
 
 config()
@@ -38,6 +38,7 @@ app.use("/system", system)
 
 app.listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);
+    gpioInit()
     systemSwitch()
 
     await initializeLightsConfig()

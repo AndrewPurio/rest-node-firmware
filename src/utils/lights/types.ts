@@ -4,7 +4,7 @@ export enum Lights {
 }
 
 export enum InputsGPIOPin {
-    RESET = 7
+    RESET = 25
 }
 
 export enum LightsGPIOPin {
