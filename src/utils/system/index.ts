@@ -28,13 +28,13 @@ export const systemSwitch = () => {
 
     const resetButton = new Gpio(InputsGPIOPin.RESET, {
         mode: Gpio.INPUT,
-        pullUpDown: Gpio.PUD_UP,
-        alert: true
+        pullUpDown: Gpio.PUD_DOWN,
+        edge: Gpio.EITHER_EDGE
     })
     
     resetButton.glitchFilter(10000)
 
-    resetButton.on("alert", (level, tick) => {
-        console.log("Button State:", level, tick, new Date())
+    resetButton.on("interrupt", (level) => {
+        console.log("Button State:", level, new Date())
     })
 }
