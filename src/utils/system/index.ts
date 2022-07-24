@@ -3,6 +3,7 @@ import { Gpio } from "pigpio"
 import { WIFI_CONNECTED } from "../../database/keys"
 import { storeValue } from "../../database/redis"
 import { removeEventSchedulerContainer } from "../events"
+import { InputsGPIOPin } from "../lights/types"
 import { initializeHotspot, restartHotspot } from "../network/access_point"
 
 export const resetDevice = async () => {
@@ -25,13 +26,15 @@ export const systemSwitch = () => {
 
     console.log("Reset Button Initialized...")
 
-    const resetButton = new Gpio(7, {
+    const resetButton = new Gpio(InputsGPIOPin.RESET, {
         mode: Gpio.INPUT,
-        pullUpDown: Gpio.PUD_DOWN,
-        edge: Gpio.EITHER_EDGE
+        pullUpDown: Gpio.PUD_UP,
+        alert: true
     })
+    
+    resetButton.glitchFilter(10000)
 
-    resetButton.on("interrupt", (level) => {
-        console.log("Button State:", level)
+    resetButton.on("alert", (level, tick) => {
+        console.log("Button State:", level, tick, new Date())
     })
 }
