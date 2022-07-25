@@ -53,15 +53,13 @@ app.listen(port, async () => {
 
     await initializeLightsConfig()
 
-    console.log("Is Connected to Wifi:", !!isConnectedToWifi)
+    console.log("Is Connected to Wifi:", !!isConnectedToWifi, isConnectedToWifi)
     console.log("Verified Serial:", verifiedSerial)
 
     if (verifiedSerial && isConnectedToWifi)
         return
 
     try {
-        console.log("Resetting the Device...")
-        
         await updateAvahiService()
         await storeValue(DEVICE_CONFIG, currentSerialNumber)
         await initializeHotspot()
