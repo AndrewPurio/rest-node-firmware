@@ -48,6 +48,7 @@ app.listen(port, async () => {
 
     const verifiedSerial = await isVerifiedSerialNumber(currentSerialNumber)
 
+    gpioInit()
     systemSwitch()
 
     await initializeLightsConfig()
