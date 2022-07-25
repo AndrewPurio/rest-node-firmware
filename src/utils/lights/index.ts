@@ -7,15 +7,13 @@ export const toggleGpioOutput = (gpio: LightsGPIOPin, state: LightsDigitalState)
     if (platform() === "win32")
         return
 
-    try {
-        const led = new Gpio(gpio, {
-            mode: Gpio.OUTPUT
-        })
+    const led = new Gpio(gpio, {
+        mode: Gpio.OUTPUT
+    })
 
-        led.digitalWrite(state)
-    } catch (error) {
-        throw error
-    }
+    console.log("Light State:", state)
+
+    led.digitalWrite(state)
 }
 
 export const fadeBrightness = async (min: number, max: number, durationInMs: number, tick = 500, controller: AbortController) => {
