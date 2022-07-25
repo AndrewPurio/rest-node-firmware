@@ -207,8 +207,11 @@ export const resetHotspotConfig = async () => {
         updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
     } catch (error) {
         throw error
-    } finally {
+    }
+
+    // The "try" clause is to handle the error if wpa_supplicant process is not running
+    try {
         await killWpaSupplicant()
         await disableProcess("wpa_supplicant")
-    }
+    } finally {}
 }

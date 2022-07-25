@@ -41,6 +41,8 @@ export const systemSwitch = () => {
     resetButton.glitchFilter(10000)
 
     resetButton.on("interrupt", (level) => {
+        console.log("Is Resetting:", !!fiveSecondPressTimer)
+
         if (level === 0) {
             clearTimeout(fiveSecondPressTimer)
             fiveSecondPressTimer = undefined
