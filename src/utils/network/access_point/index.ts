@@ -9,6 +9,7 @@ import { createHostsFile, updateHostname } from "../avahi"
 import { NetworkState } from "../dhcpcd/types"
 import { staticIpAddress } from "./config"
 import { DNSMASQ_CONF, HOSTAPD_CONF, HOSTS } from "../../../config/files"
+import { killWpaSupplicant } from "../wifi"
 
 export const initializeHotspot = async () => {
     try {
@@ -206,5 +207,8 @@ export const resetHotspotConfig = async () => {
         updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
     } catch (error) {
         throw error
+    } finally {
+        await killWpaSupplicant()
+        await disableProcess("wpa_supplicant")
     }
 }
