@@ -30,7 +30,7 @@ export const systemSwitch = () => {
 
     console.log("Reset Button Initialized...")
 
-    let fiveSecondPressTimer: NodeJS.Timeout
+    let fiveSecondPressTimer: NodeJS.Timeout | undefined
 
     const resetButton = new Gpio(InputsGPIOPin.RESET, {
         mode: Gpio.INPUT,
@@ -43,9 +43,13 @@ export const systemSwitch = () => {
     resetButton.on("interrupt", (level) => {
         if (level === 0) {
             clearTimeout(fiveSecondPressTimer)
-
+            fiveSecondPressTimer = undefined
+            
             return
         }
+
+        if(fiveSecondPressTimer)
+            return
 
         fiveSecondPressTimer = setTimeout(async () => {
             console.log("Resetting the device...")
