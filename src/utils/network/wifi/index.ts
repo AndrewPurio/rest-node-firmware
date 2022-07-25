@@ -7,10 +7,14 @@ import { execute } from "../../execute"
 import type { WifiCredentials, WifiStatus, WPASupplicantConf } from "./types"
 
 export const killWpaSupplicant = async () => {
-    const { stdout, stderr } = await execute("sudo killall wpa_supplicant")
+    try {
+        const { stdout, stderr } = await execute("sudo killall wpa_supplicant")
 
-    return {
-        stdout, stderr
+        return {
+            stdout, stderr
+        }
+    } catch(error) {
+        console.log(error)
     }
 }
 

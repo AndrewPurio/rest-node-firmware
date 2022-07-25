@@ -7,8 +7,8 @@ import { writeFileSync } from "fs"
 import { execute } from "../../execute"
 import { createHostsFile, updateHostname } from "../avahi"
 import { NetworkState } from "../dhcpcd/types"
-import { killWpaSupplicant } from "../wifi"
 import { staticIpAddress } from "./config"
+import { DNSMASQ_CONF, HOSTAPD_CONF, HOSTS } from "../../../config/files"
 
 export const initializeHotspot = async () => {
     try {
@@ -31,10 +31,10 @@ export const initializeHotspot = async () => {
         const hostsFile = createHostsFile(`restnode${id}`)
 
         await updateHostname(hostname)
-
-        writeFileSync("/etc/hosts", hostsFile)
-        writeFileSync("/etc/dnsmasq.conf", dnsMasqConf)
-        writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
+        
+        writeFileSync(HOSTS, hostsFile)
+        writeFileSync(DNSMASQ_CONF, dnsMasqConf)
+        writeFileSync(HOSTAPD_CONF, hostapdConf)
     } catch (error) {
         throw error
     }
@@ -188,9 +188,9 @@ export const configureHotspotSSID = async () => {
 export const restartHotspot = async () => {
     try {
         await restartDHCPCD()
-        await startDnsMasq()
         await enableHostapd()
         await startHostapd()
+        await startDnsMasq()
     } catch (error) {
         console.log("Restart Hotspot Error:", error)
     }
@@ -206,8 +206,5 @@ export const resetHotspotConfig = async () => {
         updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
     } catch (error) {
         throw error
-    } finally {
-        await killWpaSupplicant()
-        await disableProcess("wpa_supplicant")
     }
 }

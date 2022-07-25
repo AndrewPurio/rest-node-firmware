@@ -4,7 +4,7 @@ import { WIFI_CONNECTED } from "../../database/keys"
 import { storeValue } from "../../database/redis"
 import { removeEventSchedulerContainer } from "../events"
 import { InputsGPIOPin } from "../lights/types"
-import { initializeHotspot, restartHotspot } from "../network/access_point"
+import { initializeHotspot, resetHotspotConfig, restartHotspot } from "../network/access_point"
 
 export const gpioInit = async () => {
     configureClock(1, CLOCK_PWM)
@@ -12,11 +12,9 @@ export const gpioInit = async () => {
 
 export const resetDevice = async () => {
     try {
-        await initializeHotspot()
+        await resetHotspotConfig()
         await restartHotspot()
         await storeValue(WIFI_CONNECTED, 0)
-
-        return
     } catch (error) {
         throw error
     } finally {
@@ -37,6 +35,8 @@ export const systemSwitch = () => {
         pullUpDown: Gpio.PUD_DOWN,
         edge: Gpio.EITHER_EDGE
     })
+
+    resetButton.glitchFilter(10000)
 
     resetButton.on("interrupt", (level) => {
         if (level === 0) {

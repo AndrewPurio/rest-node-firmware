@@ -18,6 +18,7 @@ import { createServer } from "http"
 import { DEVICE_CONFIG, WIFI_CONNECTED } from "./database/keys"
 import { gpioInit, resetDevice, systemSwitch } from "./utils/system"
 import { getDeviceSerialNumber } from "./utils/systemctl"
+import { initializeHotspot } from "./utils/network/access_point"
 
 config()
 connectToRedis(client)
@@ -63,7 +64,7 @@ app.listen(port, async () => {
         
         await updateAvahiService()
         await storeValue(DEVICE_CONFIG, currentSerialNumber)
-        await resetDevice()
+        await initializeHotspot()
     } catch (error) {
         console.log(error)
     }
