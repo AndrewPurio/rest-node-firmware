@@ -49,10 +49,10 @@ router.post("/", async (request, response) => {
                 message: "Successfully updated wifi credentials"
             })
 
+            await storeValue(WIFI_CONNECTED, 1)
             await enableFirewall()
             await resetWpaSupplicant()
             await runEventSchedulerContainer(timezone)
-            await storeValue(WIFI_CONNECTED, 1)
             await enableProcess("wpa_supplicant")
         } catch (e) {
             if(!retry) {
@@ -89,6 +89,5 @@ router.get("/scan", async (request, response) => {
         response.json(error.message)
     }
 })
-
 
 export default router
