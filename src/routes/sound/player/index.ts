@@ -79,4 +79,8 @@ router.get("/stop", async (request, response) => {
     }
 })
 
+router.get("/play-pause", (request, response) => {
+    
+})
+
 export default router

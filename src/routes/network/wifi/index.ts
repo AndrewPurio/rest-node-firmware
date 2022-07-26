@@ -3,7 +3,7 @@ import { enableFirewall } from "../../../utils/network/firewall";
 import { createWpaSupplicantTemplate, encodeWifiCredentials, extractEncodedPsk, resetWpaSupplicant, scanWifi, setUserTimezone, wifiDHCPCDTemplate } from "../../../utils/network/wifi";
 import { writeFileSync } from "fs"
 import { runEventSchedulerContainer } from "../../../utils/events";
-import { storeValue } from "../../../database/redis";
+import { getValue, storeValue } from "../../../database/redis";
 import { WIFI_CONNECTED } from "../../../database/keys";
 import { DHCPCD_CONF, WPA_SUPPLICANT_CONF } from "../../../config/files";
 import { enableProcess } from "../../../utils/systemctl";
@@ -50,6 +50,9 @@ router.post("/", async (request, response) => {
             })
 
             await storeValue(WIFI_CONNECTED, 1)
+
+            console.log("Wifi status updated:", await getValue(WIFI_CONNECTED))
+
             await enableFirewall()
             await resetWpaSupplicant()
             await runEventSchedulerContainer(timezone)
