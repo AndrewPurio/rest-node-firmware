@@ -13,15 +13,25 @@ export const playSoundEffect = async (sound: SoundEffect) => {
 
     await delay(100)
 
-    playerctl(MediaPlayerEvent.volume, {
-        value: 80
-    })
+    console.log("Media Spawn:", spawn)
+
+    try {
+        playerctl(MediaPlayerEvent.volume, {
+            value: 80
+        })
+    } catch (error) {
+        console.log(error)
+    }
 
     spawn.addListener("close", () => {
         console.log("Sound effect playing has stopped")
 
-        playerctl(MediaPlayerEvent.volume, {
-            value: currentVolume
-        })
+        try {
+            playerctl(MediaPlayerEvent.volume, {
+                value: currentVolume
+            })
+        } catch (error) {
+            console.log(error)
+        }
     })
 }
