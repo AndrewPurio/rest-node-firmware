@@ -9,11 +9,9 @@ export const playSoundEffect = async (sound: SoundEffect) => {
         noVideo: true
     })
 
-    console.log("Media spawn:", spawn)
-
-    playerctl(MediaPlayerEvent.volume, {
-        value: 80
-    })
+    // playerctl(MediaPlayerEvent.volume, {
+    //     value: 80
+    // })
 
     spawn.addListener("close", () => {
         console.log("Sound effect playing has stopped")
