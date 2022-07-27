@@ -4,10 +4,7 @@ import { playMedia } from "../vlc"
 import { SoundEffect } from "./constants"
 
 export const playSoundEffect = async (sound: SoundEffect) => {
-    const spawn = playMedia(sound, {
-        playAndExit: true,
-        noVideo: true
-    })
+    const spawn = playMedia(sound)
 
     // playerctl(MediaPlayerEvent.volume, {
     //     value: 80
