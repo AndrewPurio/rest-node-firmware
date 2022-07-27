@@ -12,7 +12,7 @@ export interface PlayMediaConfig {
  * @param config Additional parameters when playing the audio
  */
 export function playMedia(file: string, config: PlayMediaConfig = {}) {
-    const options = [`'${file}'`]
+    const options = [file]
     const { loop, noVideo, playAndExit } = config
 
     if (loop)
