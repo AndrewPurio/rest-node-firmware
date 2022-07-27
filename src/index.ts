@@ -22,6 +22,10 @@ import { initializeHotspot } from "./utils/network/access_point"
 import { playSoundEffect } from "./utils/sound"
 import { SoundEffect } from "./utils/sound/constants"
 
+process.on("uncaughtException", (err) => {
+    console.error(err)
+})
+
 config()
 connectToRedis(client)
 
