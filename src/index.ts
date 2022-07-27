@@ -52,7 +52,7 @@ app.listen(port, async () => {
     const verifiedSerial = await isVerifiedSerialNumber(currentSerialNumber)
 
     systemSwitch()
-    
+
     await initializeLightsConfig()
 
     console.log("Is Connected to Wifi:", !!isConnectedToWifi, isConnectedToWifi)
@@ -70,4 +70,6 @@ app.listen(port, async () => {
     }
 })
 
-playSoundEffect(SoundEffect.ON_START)
+app.on("listening", () => {
+    playSoundEffect(SoundEffect.ON_START)
+})
