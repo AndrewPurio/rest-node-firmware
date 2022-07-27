@@ -23,6 +23,7 @@ import { playSoundEffect } from "./utils/sound"
 import { SoundEffect } from "./utils/sound/constants"
 
 config()
+gpioInit()
 connectToRedis(client)
 
 const port = process.env.port || 80
@@ -50,7 +51,6 @@ app.listen(port, async () => {
 
     const verifiedSerial = await isVerifiedSerialNumber(currentSerialNumber)
 
-    gpioInit()
     systemSwitch()
     
     await initializeLightsConfig()
