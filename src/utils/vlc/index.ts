@@ -1,4 +1,5 @@
 import { spawn } from "child_process";
+import { execute } from "../execute";
 
 export interface PlayMediaConfig {
     loop?: boolean
@@ -12,7 +13,7 @@ export interface PlayMediaConfig {
  * @param config Additional parameters when playing the audio
  */
 export function playMedia(file: string, config: PlayMediaConfig = {}) {
-    const options = [file]
+    const options = ["cvlc", file]
     const { loop, noVideo, playAndExit } = config
 
     if (loop)
@@ -24,5 +25,5 @@ export function playMedia(file: string, config: PlayMediaConfig = {}) {
     if (playAndExit)
         options.push("--play-and-exit")
 
-    return spawn("cvlc", options)
+    return execute(options.join(" "))
 }

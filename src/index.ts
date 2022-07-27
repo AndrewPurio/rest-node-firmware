@@ -21,6 +21,7 @@ import { getDeviceSerialNumber } from "./utils/systemctl"
 import { initializeHotspot } from "./utils/network/access_point"
 import { playSoundEffect } from "./utils/sound"
 import { SoundEffect } from "./utils/sound/constants"
+import { playMedia } from "./utils/vlc"
 
 config()
 gpioInit()
@@ -60,6 +61,7 @@ app.listen(port, async () => {
     systemSwitch()
 
     await initializeLightsConfig()
+    await playSoundEffect(SoundEffect.ON_START)
 
     console.log("Is Connected to Wifi:", !!isConnectedToWifi, isConnectedToWifi)
     console.log("Verified Serial:", verifiedSerial)
