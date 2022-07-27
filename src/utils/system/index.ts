@@ -10,7 +10,7 @@ import { playSoundEffect } from "../sound"
 import { SoundEffect } from "../sound/constants"
 
 export const gpioInit = async () => {
-    configureClock(1, CLOCK_PWM)
+    configureClock(5, CLOCK_PWM)
 }
 
 export const resetDevice = async () => {
