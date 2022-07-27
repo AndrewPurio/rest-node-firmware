@@ -6,6 +6,8 @@ import { removeEventSchedulerContainer } from "../events"
 import { InputsGPIOPin } from "../lights/types"
 import { initializeHotspot, resetHotspotConfig, restartHotspot } from "../network/access_point"
 import { disableFirewall } from "../network/firewall"
+import { playSoundEffect } from "../sound"
+import { SoundEffect } from "../sound/constants"
 
 export const gpioInit = async () => {
     configureClock(1, CLOCK_PWM)
@@ -17,6 +19,7 @@ export const resetDevice = async () => {
         await disableFirewall()
         await restartHotspot()
         await storeValue(WIFI_CONNECTED, 0)
+        await playSoundEffect(SoundEffect.ON_RESET)
     } catch (error) {
         throw error
     } finally {

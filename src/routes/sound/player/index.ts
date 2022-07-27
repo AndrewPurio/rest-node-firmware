@@ -80,7 +80,16 @@ router.get("/stop", async (request, response) => {
 })
 
 router.get("/play-pause", (request, response) => {
-    
+    try {
+        
+    } catch (e) {
+        const { message } = e as Error
+        response.statusCode = 500
+
+        response.json({
+            message
+        })
+    }
 })
 
 export default router

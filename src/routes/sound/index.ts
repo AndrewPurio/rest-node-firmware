@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from "express"
 
 import folders from "./[folder]"
 import player from "./player"

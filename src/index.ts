@@ -19,6 +19,8 @@ import { DEVICE_CONFIG, WIFI_CONNECTED } from "./database/keys"
 import { gpioInit, resetDevice, systemSwitch } from "./utils/system"
 import { getDeviceSerialNumber } from "./utils/systemctl"
 import { initializeHotspot } from "./utils/network/access_point"
+import { playSoundEffect } from "./utils/sound"
+import { SoundEffect } from "./utils/sound/constants"
 
 config()
 connectToRedis(client)
@@ -50,8 +52,9 @@ app.listen(port, async () => {
 
     gpioInit()
     systemSwitch()
-
+    
     await initializeLightsConfig()
+    await playSoundEffect(SoundEffect.ON_START)
 
     console.log("Is Connected to Wifi:", !!isConnectedToWifi, isConnectedToWifi)
     console.log("Verified Serial:", verifiedSerial)
