@@ -9,6 +9,8 @@ export const playSoundEffect = async (sound: SoundEffect) => {
         noVideo: true
     })
 
+    console.log("Media spawn:", spawn)
+
     playerctl(MediaPlayerEvent.volume, {
         value: 80
     })
