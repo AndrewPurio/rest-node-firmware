@@ -71,5 +71,7 @@ app.listen(port, async () => {
 })
 
 app.on("listening", () => {
+    console.log("App started listening...")
+
     playSoundEffect(SoundEffect.ON_START)
 })
