@@ -40,6 +40,12 @@ app.use("/network", network)
 app.use("/sound", sound)
 app.use("/system", system)
 
+app.on("listening", () => {
+    console.log("App started listening...")
+
+    playSoundEffect(SoundEffect.ON_START)
+})
+
 app.listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`)
 
@@ -68,10 +74,4 @@ app.listen(port, async () => {
     } catch (error) {
         console.log(error)
     }
-})
-
-app.on("listening", () => {
-    console.log("App started listening...")
-
-    playSoundEffect(SoundEffect.ON_START)
 })
