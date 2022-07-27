@@ -13,7 +13,8 @@ export interface PlayMediaConfig {
  * @param config Additional parameters when playing the audio
  */
 export function playMedia(file: string, config: PlayMediaConfig = {}) {
-    const options = ["sed -i 's/geteuid/getppid/' /usr/bin/vlc", file]
+    const cvlc = "sed -i 's/geteuid/getppid/' /usr/bin/vlc"
+    const options = [cvlc, file]
     const { loop, noVideo, playAndExit } = config
 
     if (loop)
