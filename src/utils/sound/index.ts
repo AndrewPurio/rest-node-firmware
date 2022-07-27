@@ -1,4 +1,5 @@
 import playerctl from "../playerctl"
+import { delay } from "../system"
 import { MediaPlayerEvent } from "../types"
 import { playMedia } from "../vlc"
 import { SoundEffect } from "./constants"
@@ -9,6 +10,8 @@ export const playSoundEffect = async (sound: SoundEffect) => {
         playAndExit: true,
         noVideo: true
     })
+
+    await delay(100)
 
     playerctl(MediaPlayerEvent.volume, {
         value: 80

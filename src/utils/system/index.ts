@@ -66,3 +66,7 @@ export const systemSwitch = () => {
         }, 5000)
     })
 }
+
+export const delay = async (ms: number) => {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
