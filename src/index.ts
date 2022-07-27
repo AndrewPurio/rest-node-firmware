@@ -40,7 +40,7 @@ app.use("/network", network)
 app.use("/sound", sound)
 app.use("/system", system)
 
-app.on("listening", () => {
+app.on("mount", () => {
     console.log("App started listening...")
 
     playSoundEffect(SoundEffect.ON_START)
